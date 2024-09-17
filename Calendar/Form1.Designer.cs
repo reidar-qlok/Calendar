@@ -28,81 +28,87 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.monthCalendar1 = new System.Windows.Forms.MonthCalendar();
-            this.Datum = new System.Windows.Forms.Label();
-            this.Vecka = new System.Windows.Forms.Label();
-            this.TimerButton = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.SuspendLayout();
+            monthCalendar1 = new MonthCalendar();
+            Datum = new Label();
+            Vecka = new Label();
+            TimerButton = new Button();
+            pictureBox1 = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            SuspendLayout();
             // 
             // monthCalendar1
             // 
-            this.monthCalendar1.AnnuallyBoldedDates = new System.DateTime[] {
-        new System.DateTime(2022, 1, 20, 0, 0, 0, 0),
-        new System.DateTime(2022, 1, 21, 0, 0, 0, 0)};
-            this.monthCalendar1.FirstDayOfWeek = System.Windows.Forms.Day.Monday;
-            this.monthCalendar1.Location = new System.Drawing.Point(17, 382);
-            this.monthCalendar1.Margin = new System.Windows.Forms.Padding(8, 9, 8, 9);
-            this.monthCalendar1.Name = "monthCalendar1";
-            this.monthCalendar1.ShowWeekNumbers = true;
-            this.monthCalendar1.TabIndex = 0;
+            monthCalendar1.AnnuallyBoldedDates = new DateTime[]
+    {
+    new DateTime(2022, 1, 20, 0, 0, 0, 0),
+    new DateTime(2022, 1, 21, 0, 0, 0, 0)
+    };
+            monthCalendar1.FirstDayOfWeek = Day.Monday;
+            monthCalendar1.Location = new Point(13, 514);
+            monthCalendar1.Margin = new Padding(11, 15, 11, 15);
+            monthCalendar1.Name = "monthCalendar1";
+            monthCalendar1.ShowWeekNumbers = true;
+            monthCalendar1.TabIndex = 0;
             // 
             // Datum
             // 
-            this.Datum.AutoSize = true;
-            this.Datum.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Datum.Location = new System.Drawing.Point(71, 40);
-            this.Datum.Name = "Datum";
-            this.Datum.Size = new System.Drawing.Size(52, 21);
-            this.Datum.TabIndex = 2;
-            this.Datum.Text = "label1";
+            Datum.AutoSize = true;
+            Datum.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            Datum.Location = new Point(73, 67);
+            Datum.Margin = new Padding(4, 0, 4, 0);
+            Datum.Name = "Datum";
+            Datum.Size = new Size(78, 32);
+            Datum.TabIndex = 2;
+            Datum.Text = "label1";
             // 
             // Vecka
             // 
-            this.Vecka.AutoSize = true;
-            this.Vecka.Location = new System.Drawing.Point(106, 61);
-            this.Vecka.Name = "Vecka";
-            this.Vecka.Size = new System.Drawing.Size(38, 15);
-            this.Vecka.TabIndex = 3;
-            this.Vecka.Text = "label1";
+            Vecka.AutoSize = true;
+            Vecka.Location = new Point(141, 102);
+            Vecka.Margin = new Padding(4, 0, 4, 0);
+            Vecka.Name = "Vecka";
+            Vecka.Size = new Size(59, 25);
+            Vecka.TabIndex = 3;
+            Vecka.Text = "label1";
             // 
             // TimerButton
             // 
-            this.TimerButton.Location = new System.Drawing.Point(29, 16);
-            this.TimerButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TimerButton.Name = "TimerButton";
-            this.TimerButton.Size = new System.Drawing.Size(220, 22);
-            this.TimerButton.TabIndex = 4;
-            this.TimerButton.Text = "Starta";
-            this.TimerButton.UseVisualStyleBackColor = true;
-            this.TimerButton.Click += new System.EventHandler(this.TimerButton_Click);
+            TimerButton.Location = new Point(41, 27);
+            TimerButton.Margin = new Padding(4, 3, 4, 3);
+            TimerButton.Name = "TimerButton";
+            TimerButton.Size = new Size(275, 37);
+            TimerButton.TabIndex = 4;
+            TimerButton.Text = "Starta";
+            TimerButton.UseVisualStyleBackColor = true;
+            TimerButton.Click += TimerButton_Click;
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(4, 102);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(255, 268);
-            this.pictureBox1.TabIndex = 5;
-            this.pictureBox1.TabStop = false;
+            pictureBox1.Location = new Point(13, 150);
+            pictureBox1.Margin = new Padding(4, 5, 4, 5);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(320, 320);
+            pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBox1.TabIndex = 5;
+            pictureBox1.TabStop = false;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(268, 566);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.TimerButton);
-            this.Controls.Add(this.Vecka);
-            this.Controls.Add(this.Datum);
-            this.Controls.Add(this.monthCalendar1);
-            this.Name = "Form1";
-            this.Text = "Date";
-            this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(354, 791);
+            Controls.Add(pictureBox1);
+            Controls.Add(TimerButton);
+            Controls.Add(Vecka);
+            Controls.Add(Datum);
+            Controls.Add(monthCalendar1);
+            Margin = new Padding(4, 5, 4, 5);
+            Name = "Form1";
+            Text = "Date";
+            Load += Form1_Load;
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
