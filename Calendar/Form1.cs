@@ -128,7 +128,7 @@ namespace Calendar
                 g.FillRectangle(Brushes.LightGray, dateBoxX, dateBoxY, dateBoxWidth, dateBoxHeight);
 
                 // Rita en grå ram runt rutan
-                g.DrawRectangle(new Pen(Color.Gray, 2f), dateBoxX, dateBoxY, dateBoxWidth, dateBoxHeight);
+                g.DrawRectangle(new Pen(Color.DarkGray, 2f), dateBoxX, dateBoxY, dateBoxWidth, dateBoxHeight);
 
                 // Skriv in dagens datum (dag/månad) i rutan med bruna siffror
                 string dayMonth = DateTime.Now.ToString("dd/MM", CultureInfo.InvariantCulture); // Använder InvariantCulture för att säkerställa dd/MM-format
