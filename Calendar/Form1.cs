@@ -90,17 +90,60 @@ namespace Calendar
             g.DrawEllipse(new Pen(Color.Black, 1f), 10, 10, WIDTH, HEIGHT); // Adjusted to start with padding of 10
 
             // Draw numbers with refined positions
-            int radius = WIDTH / 2;
+            int radius = WIDTH / 2 - 22; // Justera avståndet från centrum
 
-            // Adjusted positions for each number
-            g.DrawString("12", new Font("Arial", 16), Brushes.Black, new PointF(cx - 20, cy - radius + 15)); // Move "12" slightly left and up
-            g.DrawString("3", new Font("Arial", 16), Brushes.Black, new PointF(cx + radius - 45, cy - 12)); // Move "3" further to the left
-            g.DrawString("6", new Font("Arial", 16), Brushes.Black, new PointF(cx - 10, cy + radius - 40)); // Move "6" slightly up
-            g.DrawString("9", new Font("Arial", 16), Brushes.Black, new PointF(cx - radius + 15, cy - 12)); // Adjust "9" as a reference
+            // Justerade positioner för varje siffra och mindre fontstorlek
+            g.DrawString("12", new Font("Arial", 13), Brushes.Black, new PointF(cx - 15, cy - radius + 5)); // Mindre och närmare centrum
+            g.DrawString("3", new Font("Arial", 13), Brushes.Black, new PointF(cx + radius - 30, cy - 10)); // Mindre och närmare centrum
+            g.DrawString("6", new Font("Arial", 13), Brushes.Black, new PointF(cx - 10, cy + radius - 32)); // Mindre och närmare centrum
+            g.DrawString("9", new Font("Arial", 12), Brushes.Black, new PointF(cx - radius + 5, cy - 10));  // Mindre och närmare centrum
 
-            // Second hand
-            handCoord = msCoord(ss, secHAND);
-            g.DrawLine(new Pen(Color.Red, 1f), new Point(cx, cy), new Point(handCoord[0], handCoord[1]));
+            for (int i = 0; i < 60; i++)
+            {
+                int tickLength = (i % 5 == 0) ? 15 : 7; // Större tickar för varje 5:e minut (timmarkeringar)
+
+                // Beräkna start- och slutpositioner för varje tick
+                int x1 = cx + (int)((WIDTH / 2 - 10) * Math.Sin(i * 6 * Math.PI / 180)); // Startposition nära kanten
+                int y1 = cy - (int)((WIDTH / 2 - 10) * Math.Cos(i * 6 * Math.PI / 180)); // Startposition nära kanten
+                int x2 = cx + (int)((WIDTH / 2 - 10 - tickLength) * Math.Sin(i * 6 * Math.PI / 180)); // Slutposition lite längre in
+                int y2 = cy - (int)((WIDTH / 2 - 10 - tickLength) * Math.Cos(i * 6 * Math.PI / 180)); // Slutposition lite längre in
+
+                // Om det är en timmarkering (varje 5:e minut), rita den blå och tjockare
+                if (i % 5 == 0)
+                {
+                    g.DrawLine(new Pen(Color.DarkSlateBlue, 3f), new Point(x1, y1), new Point(x2, y2)); // Tjockare och blå timmarkeringar
+                }
+                else
+                {
+                    // Rita minutstreck som vanliga svarta tunna linjer
+                    g.DrawLine(new Pen(Color.Black, 1f), new Point(x1, y1), new Point(x2, y2));
+                }
+                // Justera position och storlek på datumrutan
+                int dateBoxX = cx + radius / 3;  // Flyttar rutan åt vänster
+                int dateBoxY = cy - 7;               // Flyttar rutan uppåt
+                int dateBoxWidth = 30;           // Mindre bredd på rutan
+                int dateBoxHeight = 25;          // Mindre höjd på rutan
+
+                // Rita en smalare ruta med gul bakgrund
+                g.FillRectangle(Brushes.LightYellow, dateBoxX, dateBoxY, dateBoxWidth, dateBoxHeight);
+                g.DrawRectangle(new Pen(Color.Black, 1f), dateBoxX, dateBoxY, dateBoxWidth, dateBoxHeight);
+
+                // Skriv in dagens datum (dagnummer) i rutan med bruna siffror
+                string dayNumber = DateTime.Now.Day.ToString();
+                Font dayFont = new Font("Arial", 10);
+                SizeF stringSize = g.MeasureString(dayNumber, dayFont);
+
+                // Centrera texten i rutan
+                float textX = dateBoxX + (dateBoxWidth - stringSize.Width) / 2; // Beräkna x-position för att centrera
+                float textY = dateBoxY + (dateBoxHeight - stringSize.Height) / 2; // Beräkna y-position för att centrera
+                g.DrawString(dayNumber, dayFont, Brushes.Brown, new PointF(textX, textY));
+
+                // Second hand
+                handCoord = msCoord(ss, secHAND);
+                g.DrawLine(new Pen(Color.Red, 1f), new Point(cx, cy), new Point(handCoord[0], handCoord[1]));
+
+            }
+
 
             // Minute hand
             handCoord = msCoord(mm, minHAND);
@@ -114,7 +157,9 @@ namespace Calendar
             pictureBox1.Image = bmp;
 
             // Display time
-            this.Text = "Analog Clock -  " + hh + ":" + mm + ":" + ss;
+            this.Text = "RN Clock -  " + hh + ":" + mm + ":" + ss;
+
+
 
             // Dispose
             g.Dispose();
