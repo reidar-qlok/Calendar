@@ -87,7 +87,7 @@ namespace Calendar
             g.Clear(Color.White);
 
             // Draw circle with padding
-            g.DrawEllipse(new Pen(Color.Black, 1f), 10, 10, WIDTH, HEIGHT); // Adjusted to start with padding of 10
+            g.DrawEllipse(new Pen(Color.Black, 1f), 10, 10, WIDTH, HEIGHT);
 
             // Draw numbers with refined positions
             int radius = WIDTH / 2 - 22; // Justera avståndet från centrum
@@ -121,23 +121,33 @@ namespace Calendar
                 // Justera position och storlek på datumrutan
                 int dateBoxX = cx + radius / 3;  // Flyttar rutan åt vänster
                 int dateBoxY = cy - 7;               // Flyttar rutan uppåt
-                int dateBoxWidth = 30;           // Mindre bredd på rutan
+                int dateBoxWidth = 50;           // Mindre bredd på rutan
                 int dateBoxHeight = 25;          // Mindre höjd på rutan
 
-                // Rita en smalare ruta med gul bakgrund
-                g.FillRectangle(Brushes.LightYellow, dateBoxX, dateBoxY, dateBoxWidth, dateBoxHeight);
-                g.DrawRectangle(new Pen(Color.Black, 1f), dateBoxX, dateBoxY, dateBoxWidth, dateBoxHeight);
+                /// Simulera en inre skugga genom att fylla rutan med en ljusare färg (ljusgrå)
+                g.FillRectangle(Brushes.LightGray, dateBoxX, dateBoxY, dateBoxWidth, dateBoxHeight);
+
+                // Rita en grå ram runt rutan
+                g.DrawRectangle(new Pen(Color.Gray, 2f), dateBoxX, dateBoxY, dateBoxWidth, dateBoxHeight);
+
+                // Skriv in dagens datum (dag/månad) i rutan med bruna siffror
+                string dayMonth = DateTime.Now.ToString("dd/MM", CultureInfo.InvariantCulture); // Använder InvariantCulture för att säkerställa dd/MM-format
+                Font dayFont = new Font("Arial", 10);
+                SizeF stringSize = g.MeasureString(dayMonth, dayFont);
+
 
                 // Skriv in dagens datum (dagnummer) i rutan med bruna siffror
                 string dayNumber = DateTime.Now.Day.ToString();
-                Font dayFont = new Font("Arial", 10);
-                SizeF stringSize = g.MeasureString(dayNumber, dayFont);
+
+
 
                 // Centrera texten i rutan
                 float textX = dateBoxX + (dateBoxWidth - stringSize.Width) / 2; // Beräkna x-position för att centrera
                 float textY = dateBoxY + (dateBoxHeight - stringSize.Height) / 2; // Beräkna y-position för att centrera
-                g.DrawString(dayNumber, dayFont, Brushes.Brown, new PointF(textX, textY));
 
+                // Rita texten (dag/månad) med bruna siffror
+                g.DrawString(dayMonth, dayFont, Brushes.Brown, new PointF(textX, textY));
+                /////////////////////////////////////////////
                 // Second hand
                 handCoord = msCoord(ss, secHAND);
                 g.DrawLine(new Pen(Color.Red, 1f), new Point(cx, cy), new Point(handCoord[0], handCoord[1]));
