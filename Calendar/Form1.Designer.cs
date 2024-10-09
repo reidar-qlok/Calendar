@@ -33,6 +33,8 @@
             Vecka = new Label();
             TimerButton = new Button();
             pictureBox1 = new PictureBox();
+            SetMarkerButton = new Button();
+            SetMarker10Button = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -44,7 +46,7 @@
     new DateTime(2022, 1, 21, 0, 0, 0, 0)
     };
             monthCalendar1.FirstDayOfWeek = Day.Monday;
-            monthCalendar1.Location = new Point(13, 514);
+            monthCalendar1.Location = new Point(13, 580);
             monthCalendar1.Margin = new Padding(11, 15, 11, 15);
             monthCalendar1.Name = "monthCalendar1";
             monthCalendar1.ShowWeekNumbers = true;
@@ -84,7 +86,7 @@
             // 
             // pictureBox1
             // 
-            pictureBox1.Location = new Point(13, 150);
+            pictureBox1.Location = new Point(13, 240);
             pictureBox1.Margin = new Padding(4, 5, 4, 5);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(320, 320);
@@ -92,11 +94,33 @@
             pictureBox1.TabIndex = 5;
             pictureBox1.TabStop = false;
             // 
+            // SetMarkerButton
+            // 
+            SetMarkerButton.Location = new Point(259, 139);
+            SetMarkerButton.Name = "SetMarkerButton";
+            SetMarkerButton.Size = new Size(57, 34);
+            SetMarkerButton.TabIndex = 6;
+            SetMarkerButton.Text = "15";
+            SetMarkerButton.UseVisualStyleBackColor = true;
+            SetMarkerButton.Click += SetMarkerButton_Click;
+            // 
+            // SetMarker10Button
+            // 
+            SetMarker10Button.Location = new Point(41, 139);
+            SetMarker10Button.Name = "SetMarker10Button";
+            SetMarker10Button.Size = new Size(65, 34);
+            SetMarker10Button.TabIndex = 7;
+            SetMarker10Button.Text = "10";
+            SetMarker10Button.UseVisualStyleBackColor = true;
+            SetMarker10Button.Click += SetMarker10Button_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(354, 791);
+            ClientSize = new Size(354, 857);
+            Controls.Add(SetMarker10Button);
+            Controls.Add(SetMarkerButton);
             Controls.Add(pictureBox1);
             Controls.Add(TimerButton);
             Controls.Add(Vecka);
@@ -118,6 +142,8 @@
         private Label Vecka;
         private Button TimerButton;
         private PictureBox pictureBox1;
+        private Button SetMarkerButton;
+        private Button SetMarker10Button;
 
 
         // 

@@ -5,20 +5,22 @@ namespace Calendar
 {
     public partial class Form1 : Form
     {
-
         System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
         System.Windows.Forms.Timer MyTimer = new System.Windows.Forms.Timer();
         int WIDTH = 300, HEIGHT = 300, secHAND = 140, minHAND = 120, hrHAND = 90;
-        //Center
+        // Center
         int cx, cy;
         Bitmap bmp;
         Graphics g;
+
+        // Variabler för att hålla minutvärdena för markörerna
+        private int? markerMinute = null;
+        private int? markerMinute10 = null;
 
         public Form1()
         {
             InitializeComponent();
             this.Resize += new System.EventHandler(this.Form1_Resize);
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -53,129 +55,127 @@ namespace Calendar
             TimerButton.BackColor = Color.Red;
             TimerButton.ForeColor = Color.White;
         }
+
         private void MyTimer_Tick(object sender, EventArgs e)
         {
             MyTimer.Interval = (60 * 1000);
             if (sender == MyTimer)
             {
-                //SystemSounds.Exclamation.Play();
                 SystemSounds.Beep.Play();
-                //SystemSounds.Hand.Play();
                 MessageBox.Show("45 minuter har gått, dags för rast", "Ägg klockan");
-
                 this.Close();
             }
         }
+
         private static int WeekOfYearISO8601(DateTime date)
         {
             var day = (int)CultureInfo.CurrentCulture.Calendar.GetDayOfWeek(date);
             return CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(date.AddDays(4 - (day == 0 ? 7 : day)), CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
         }
+
         private void t_Tick(object sender, EventArgs e)
         {
-            // Create graphics
-            g = Graphics.FromImage(bmp);
-
-            // Get time
-            int ss = DateTime.Now.Second;
-            int mm = DateTime.Now.Minute;
-            int hh = DateTime.Now.Hour;
-
-            int[] handCoord = new int[2];
-
-            // Clear
-            g.Clear(Color.White);
-
-            // Draw circle with padding
-            g.DrawEllipse(new Pen(Color.Black, 1f), 10, 10, WIDTH, HEIGHT);
-
-            // Draw numbers with refined positions
-            int radius = WIDTH / 2 - 22; // Justera avståndet från centrum
-
-            // Justerade positioner för varje siffra och mindre fontstorlek
-            g.DrawString("12", new Font("Arial", 13), Brushes.Black, new PointF(cx - 15, cy - radius + 5)); // Mindre och närmare centrum
-            g.DrawString("3", new Font("Arial", 13), Brushes.Black, new PointF(cx + radius - 30, cy - 10)); // Mindre och närmare centrum
-            g.DrawString("6", new Font("Arial", 13), Brushes.Black, new PointF(cx - 10, cy + radius - 32)); // Mindre och närmare centrum
-            g.DrawString("9", new Font("Arial", 12), Brushes.Black, new PointF(cx - radius + 5, cy - 10));  // Mindre och närmare centrum
-
-            for (int i = 0; i < 60; i++)
+            // Kontrollera att bmp inte är null och har rätt storlek
+            if (bmp == null || bmp.Width != WIDTH + 20 || bmp.Height != HEIGHT + 20)
             {
-                int tickLength = (i % 5 == 0) ? 15 : 7; // Större tickar för varje 5:e minut (timmarkeringar)
+                bmp = new Bitmap(WIDTH + 20, HEIGHT + 20); // Initiera bitmappen om den är null eller har fel storlek
+            }
 
-                // Beräkna start- och slutpositioner för varje tick
-                int x1 = cx + (int)((WIDTH / 2 - 10) * Math.Sin(i * 6 * Math.PI / 180)); // Startposition nära kanten
-                int y1 = cy - (int)((WIDTH / 2 - 10) * Math.Cos(i * 6 * Math.PI / 180)); // Startposition nära kanten
-                int x2 = cx + (int)((WIDTH / 2 - 10 - tickLength) * Math.Sin(i * 6 * Math.PI / 180)); // Slutposition lite längre in
-                int y2 = cy - (int)((WIDTH / 2 - 10 - tickLength) * Math.Cos(i * 6 * Math.PI / 180)); // Slutposition lite längre in
+            // Initiera grafikobjekt från bitmappen
+            using (g = Graphics.FromImage(bmp))
+            {
+                // Hämta aktuell tid
+                int ss = DateTime.Now.Second;
+                int mm = DateTime.Now.Minute;
+                int hh = DateTime.Now.Hour;
 
-                // Om det är en timmarkering (varje 5:e minut), rita den blå och tjockare
-                if (i % 5 == 0)
+                int[] handCoord = new int[2];
+
+                // Rensa ritytan
+                g.Clear(Color.White);
+
+                // Rita cirkeln som representerar klockan med padding
+                g.DrawEllipse(new Pen(Color.Black, 1f), 10, 10, WIDTH, HEIGHT);
+
+                // Rita siffrorna på klockan
+                int radius = WIDTH / 2 - 22; // Justera avståndet från centrum
+                g.DrawString("12", new Font("Arial", 13), Brushes.Black, new PointF(cx - 15, cy - radius + 5));
+                g.DrawString("3", new Font("Arial", 13), Brushes.Black, new PointF(cx + radius - 30, cy - 10));
+                g.DrawString("6", new Font("Arial", 13), Brushes.Black, new PointF(cx - 10, cy + radius - 32));
+                g.DrawString("9", new Font("Arial", 12), Brushes.Black, new PointF(cx - radius + 5, cy - 10));
+
+                // Rita tim- och minutmarkeringar
+                for (int i = 0; i < 60; i++)
                 {
-                    g.DrawLine(new Pen(Color.DarkSlateBlue, 3f), new Point(x1, y1), new Point(x2, y2)); // Tjockare och blå timmarkeringar
-                }
-                else
-                {
-                    // Rita minutstreck som vanliga svarta tunna linjer
-                    g.DrawLine(new Pen(Color.Black, 1f), new Point(x1, y1), new Point(x2, y2));
-                }
-                // Justera position och storlek på datumrutan
-                int dateBoxX = cx + radius / 3;  // Flyttar rutan åt vänster
-                int dateBoxY = cy - 7;               // Flyttar rutan uppåt
-                int dateBoxWidth = 50;           // Mindre bredd på rutan
-                int dateBoxHeight = 25;          // Mindre höjd på rutan
+                    int tickLength = (i % 5 == 0) ? 15 : 7; // Större markeringar för varje 5:e minut
 
-                /// Simulera en inre skugga genom att fylla rutan med en ljusare färg (ljusgrå)
+                    // Beräkna start- och slutkoordinater för varje markering
+                    int x1 = cx + (int)((WIDTH / 2 - 10) * Math.Sin(i * 6 * Math.PI / 180));
+                    int y1 = cy - (int)((WIDTH / 2 - 10) * Math.Cos(i * 6 * Math.PI / 180));
+                    int x2 = cx + (int)((WIDTH / 2 - 10 - tickLength) * Math.Sin(i * 6 * Math.PI / 180));
+                    int y2 = cy - (int)((WIDTH / 2 - 10 - tickLength) * Math.Cos(i * 6 * Math.PI / 180));
+
+                    // Rita tim- och minutmarkeringar
+                    if (i % 5 == 0)
+                    {
+                        g.DrawLine(new Pen(Color.DarkSlateBlue, 3f), new Point(x1, y1), new Point(x2, y2)); // Tjockare markeringar
+                    }
+                    else
+                    {
+                        g.DrawLine(new Pen(Color.Black, 1f), new Point(x1, y1), new Point(x2, y2)); // Tunna markeringar
+                    }
+                }
+
+                // Rita datumrutan
+                int dateBoxX = cx + radius / 3;
+                int dateBoxY = cy - 7;
+                int dateBoxWidth = 50;
+                int dateBoxHeight = 25;
+
+                // Rita ljusgrå bakgrund och ram
                 g.FillRectangle(Brushes.LightGray, dateBoxX, dateBoxY, dateBoxWidth, dateBoxHeight);
-
-                // Rita en grå ram runt rutan
                 g.DrawRectangle(new Pen(Color.DarkGray, 2f), dateBoxX, dateBoxY, dateBoxWidth, dateBoxHeight);
 
-                // Skriv in dagens datum (dag/månad) i rutan med bruna siffror
-                string dayMonth = DateTime.Now.ToString("dd/MM", CultureInfo.InvariantCulture); // Använder InvariantCulture för att säkerställa dd/MM-format
+                // Skriv dagens datum i rutan
+                string dayMonth = DateTime.Now.ToString("dd/MM", CultureInfo.InvariantCulture);
                 Font dayFont = new Font("Arial", 10);
                 SizeF stringSize = g.MeasureString(dayMonth, dayFont);
-
-
-                // Skriv in dagens datum (dagnummer) i rutan med bruna siffror
-                string dayNumber = DateTime.Now.Day.ToString();
-
-
-
-                // Centrera texten i rutan
-                float textX = dateBoxX + (dateBoxWidth - stringSize.Width) / 2; // Beräkna x-position för att centrera
-                float textY = dateBoxY + (dateBoxHeight - stringSize.Height) / 2; // Beräkna y-position för att centrera
-
-                // Rita texten (dag/månad) med bruna siffror
+                float textX = dateBoxX + (dateBoxWidth - stringSize.Width) / 2;
+                float textY = dateBoxY + (dateBoxHeight - stringSize.Height) / 2;
                 g.DrawString(dayMonth, dayFont, Brushes.Brown, new PointF(textX, textY));
-                /////////////////////////////////////////////
-                // Second hand
+
+                // Rita sekundvisaren
                 handCoord = msCoord(ss, secHAND);
                 g.DrawLine(new Pen(Color.Red, 1f), new Point(cx, cy), new Point(handCoord[0], handCoord[1]));
 
+                // Rita minutvisaren
+                handCoord = msCoord(mm, minHAND);
+                g.DrawLine(new Pen(Color.Black, 2f), new Point(cx, cy), new Point(handCoord[0], handCoord[1]));
+
+                // Rita timvisaren
+                handCoord = hrCoord(hh % 12, mm, hrHAND);
+                g.DrawLine(new Pen(Color.Gray, 3f), new Point(cx, cy), new Point(handCoord[0], handCoord[1]));
+
+                // Om en markör är satt, rita den (grön triangel)
+                if (markerMinute.HasValue)
+                {
+                    DrawMarkerAtMinute(markerMinute.Value, Brushes.Green);
+                }
+
+                // Om 10-minutersmarkören är satt, rita den (blå triangel)
+                if (markerMinute10.HasValue)
+                {
+                    DrawMarkerAtMinute(markerMinute10.Value, Brushes.Blue);
+                }
+
+                // Ladda upp bilden i PictureBox
+                pictureBox1.Image = bmp;
+
+                // Uppdatera fönstertiteln med tiden
+                this.Text = "RN Clock - " + hh + ":" + mm + ":" + ss;
             }
-
-
-            // Minute hand
-            handCoord = msCoord(mm, minHAND);
-            g.DrawLine(new Pen(Color.Black, 2f), new Point(cx, cy), new Point(handCoord[0], handCoord[1]));
-
-            // Hour hand
-            handCoord = hrCoord(hh % 12, mm, hrHAND);
-            g.DrawLine(new Pen(Color.Gray, 3f), new Point(cx, cy), new Point(handCoord[0], handCoord[1]));
-
-            // Load bmp in pictureBox1
-            pictureBox1.Image = bmp;
-
-            // Display time
-            this.Text = "RN Clock -  " + hh + ":" + mm + ":" + ss;
-
-
-
-            // Dispose
-            g.Dispose();
         }
 
-        //coord for minute and second hand
         private int[] msCoord(int val, int hlen)
         {
             int[] coord = new int[2];
@@ -193,12 +193,13 @@ namespace Calendar
             }
             return coord;
         }
+
         private void Form1_Resize(object sender, EventArgs e)
         {
             // Center pictureBox1 on resize
             pictureBox1.Location = new Point((this.ClientSize.Width - pictureBox1.Width) / 2, (this.ClientSize.Height - pictureBox1.Height) / 2);
         }
-        //coord for hour hand
+
         private int[] hrCoord(int hval, int mval, int hlen)
         {
             int[] coord = new int[2];
@@ -219,6 +220,54 @@ namespace Calendar
             }
             return coord;
         }
+
+        // Klickhändelse för 15-minutersmarkören (grön triangel)
+        private void SetMarkerButton_Click(object sender, EventArgs e)
+        {
+            int minutesToAdd = 15;
+            markerMinute = (DateTime.Now.Minute + minutesToAdd) % 60; // Hitta minutpositionen
+        }
+
+        // Klickhändelse för 10-minutersmarkören (blå triangel)
+        private void SetMarker10Button_Click(object sender, EventArgs e)
+        {
+            int minutesToAdd = 10;
+            markerMinute10 = (DateTime.Now.Minute + minutesToAdd) % 60; // Hitta minutpositionen för 10 minuter framåt
+        }
+
+        private void DrawMarkerAtMinute(int targetMinute, Brush fillBrush)
+        {
+            // Beräkna vinkeln för minutpositionen (varje minut motsvarar 6 grader)
+            double angle = targetMinute * 6 * Math.PI / 180;
+
+            // Triangelns dimensioner
+            int triHeight = 15; // Triangelns höjd
+            int triBase = 6;   // Triangelns bredd vid basen (mindre för att göra triangeln smalare)
+
+            // Placera spetsen av triangeln precis på cirkelns kant
+            int tipRadius = WIDTH / 2 - 5; // Spetsen precis på cirkelns kant
+            int xTip = cx + (int)(tipRadius * Math.Sin(angle));
+            int yTip = cy - (int)(tipRadius * Math.Cos(angle));
+
+            // Placera basen av triangeln utanför cirkeln
+            int baseRadius = WIDTH / 2 + 10; // Basen placeras utanför cirkeln
+            int xBaseLeft = cx + (int)(baseRadius * Math.Sin(angle + Math.PI / 36)); // Vänster baspunkt, smalare vinkel
+            int yBaseLeft = cy - (int)(baseRadius * Math.Cos(angle + Math.PI / 36));
+
+            int xBaseRight = cx + (int)(baseRadius * Math.Sin(angle - Math.PI / 36)); // Höger baspunkt, smalare vinkel
+            int yBaseRight = cy - (int)(baseRadius * Math.Cos(angle - Math.PI / 36));
+
+            // Definiera triangeln med spetsen och de två baspunkterna
+            Point[] trianglePoints = {
+        new Point(xTip, yTip),      // Spetsen på triangeln (på cirkeln)
+        new Point(xBaseLeft, yBaseLeft),   // Vänstra hörnet av basen (utanför cirkeln)
+        new Point(xBaseRight, yBaseRight)  // Högra hörnet av basen (utanför cirkeln)
+    };
+
+            // Fyll triangeln med vald färg
+            g.FillPolygon(fillBrush, trianglePoints);
+        }
+
 
     }
 }
